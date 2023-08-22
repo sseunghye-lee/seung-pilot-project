@@ -1,7 +1,10 @@
 package com.sseung.pilot.seungpilotproject.business.board.domain;
 
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.BoardCategory;
+import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,4 +43,18 @@ public class Board extends BaseEntity implements Serializable {
 
     @Column(columnDefinition = "bigint COMMENT '사용자 아이디'")
     private Long userId;
+
+    public static Board insert(BoardRequest boardRequest) {
+        return Board.builder()
+                .boardCategory(boardRequest.getBoardCategory())
+                .title(boardRequest.getTitle())
+                .view(0L)
+                .content(boardRequest.getContent())
+                .userId(boardRequest.getUserId())
+                .build();
+    }
+
+    public BoardResponse convertDto() {
+        return ModelMapperUtil.get().map(this, BoardResponse.class);
+    }
 }
