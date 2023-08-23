@@ -1,6 +1,8 @@
 package com.sseung.pilot.seungpilotproject.business.board.domain;
 
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
+import com.sseung.pilot.seungpilotproject.commons.converter.FileConverter;
+import com.sseung.pilot.seungpilotproject.commons.dto.commons.FileDto;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.BoardCategory;
@@ -40,6 +42,10 @@ public class Board extends BaseEntity implements Serializable {
 
     @Column(columnDefinition = "mediumtext COMMENT '내용'")
     private String content;
+
+    @Convert(converter = FileConverter.class)
+    @Column(columnDefinition = "varchar(1000) COMMENT '게시판 이미지'")
+    private FileDto boardImg;
 
     @Column(columnDefinition = "bigint COMMENT '사용자 아이디'")
     private Long userId;
