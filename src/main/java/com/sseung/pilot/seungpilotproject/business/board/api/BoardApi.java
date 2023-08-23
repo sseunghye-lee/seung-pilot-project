@@ -23,4 +23,10 @@ public class BoardApi {
     public ApiResult<BoardResponse> getBoard(@PathVariable("bdId") long bdId) {
         return success(boardService.findBoard(bdId));
     }
+
+    @PatchMapping("/board/{bdId}/view")
+    public ApiResult<?> addView(@PathVariable("bdId") long bdId) {
+        boardService.addView(bdId);
+        return success();
+    }
 }

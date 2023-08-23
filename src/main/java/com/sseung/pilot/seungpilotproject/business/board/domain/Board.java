@@ -63,4 +63,8 @@ public class Board extends BaseEntity implements Serializable {
     public BoardResponse convertDto() {
         return ModelMapperUtil.get().map(this, BoardResponse.class);
     }
+
+    public void addView() {
+        this.view = this.view + 1;
+    }
 }

@@ -33,4 +33,9 @@ public class BoardService {
         Board board = this.getOne(bdId);
         return ModelMapperUtil.get().map(board, BoardResponse.class);
     }
+
+    public void addView(long bdId) {
+        Board board = this.getOne(bdId);
+        board.addView();
+    }
 }
