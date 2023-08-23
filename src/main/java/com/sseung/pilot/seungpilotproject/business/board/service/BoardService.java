@@ -5,6 +5,8 @@ import com.sseung.pilot.seungpilotproject.business.board.repo.BoardRepo;
 import com.sseung.pilot.seungpilotproject.business.board.repo.BoardRepoSupport;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.BoardResponse;
+import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,5 +22,15 @@ public class BoardService {
         Board board = Board.insert(boardRequest);
         boardRepo.save(board);
         return board.convertDto();
+    }
+
+    public Board getOne(long bdId) {
+        return boardRepo.findById(bdId)
+                .orElseThrow(() -> new EntityNotFoundException("not exists " + bdId));
+    }
+
+    public BoardResponse findBoard(long bdId) {
+        Board board = this.getOne(bdId);
+        return ModelMapperUtil.get().map(board, BoardResponse.class);
     }
 }

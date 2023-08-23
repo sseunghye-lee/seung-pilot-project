@@ -5,9 +5,7 @@ import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest
 import com.sseung.pilot.seungpilotproject.commons.dto.response.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.sseung.pilot.seungpilotproject.commons.utils.ApiUtils.success;
 
@@ -19,5 +17,10 @@ public class BoardApi {
     @PostMapping("/board")
     public ApiResult<BoardResponse> add(@RequestBody BoardRequest boardRequest) {
         return success(boardService.insertBoard(boardRequest));
+    }
+
+    @GetMapping("/board/{bdId}")
+    public ApiResult<BoardResponse> getBoard(@PathVariable("bdId") long bdId) {
+        return success(boardService.findBoard(bdId));
     }
 }
