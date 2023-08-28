@@ -17,6 +17,14 @@ spring:
       ddl-auto: update
     open-in-view: false
 
+util:
+  encrypt:
+    secretKey: zoqkfow29fj20fchg95761kjfsd342gi
+  jwt:
+    secretKey: ewjf91kfoqiwuejcuzghqpmvzzd39ru8
+    refreshKey: ewjf91kfoqiwuejcuzghqpmvzzd39ru8
+    defaultExpirationMinutes: 60
+
 springdoc:
   api-docs:
     path: /api-docs

@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @RequiredArgsConstructor
 public enum ResultCode {
-    NONE(0, "NONE");
+    NONE(0, "NONE"),
+    EXPIRED_TOKEN(100, "EXPIRED_TOKEN"),
+    EXPIRED_REFRESH_TOKEN(100, "EXPIRED_REFRESH_TOKEN");
 
     private final int id;
     private final String desc;
