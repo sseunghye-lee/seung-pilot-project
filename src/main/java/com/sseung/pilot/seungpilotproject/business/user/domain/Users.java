@@ -62,8 +62,14 @@ public class Users extends BaseEntity implements Serializable {
 
     public static Users init(SignUpRequest request) {
         Users user = ModelMapperUtil.get().map(request, Users.class);
-        UserRoles.makeUserRole(UserRole.ROLE_USER);
+        user.addUserRoles(UserRole.ROLE_USER);
         return user;
+    }
+
+    public void addUserRoles(UserRole userRole) {
+        UserRoles role = UserRoles.makeUserRole(userRole);
+        userRoles.add(role);
+        role.setUsers(this);
     }
 
     public SignUpResponse convertSignUpResponse() {
