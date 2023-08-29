@@ -2,7 +2,11 @@ package com.sseung.pilot.seungpilotproject.business.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.Gender;
+import com.sseung.pilot.seungpilotproject.commons.enums.UserRole;
+import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,5 +60,14 @@ public class Users extends BaseEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoles> userRoles = new ArrayList<>();
 
+    public static Users init(SignUpRequest request) {
+        Users user = ModelMapperUtil.get().map(request, Users.class);
+        UserRoles.makeUserRole(UserRole.ROLE_USER);
+        return user;
+    }
+
+    public SignUpResponse convertSignUpResponse() {
+        return new SignUpResponse(userEmail, userName);
+    }
 
 }

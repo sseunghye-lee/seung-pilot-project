@@ -4,7 +4,7 @@ import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
 import com.sseung.pilot.seungpilotproject.commons.converter.FileConverter;
 import com.sseung.pilot.seungpilotproject.commons.dto.commons.FileDto;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
-import com.sseung.pilot.seungpilotproject.commons.dto.response.BoardResponse;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.BoardCategory;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.*;

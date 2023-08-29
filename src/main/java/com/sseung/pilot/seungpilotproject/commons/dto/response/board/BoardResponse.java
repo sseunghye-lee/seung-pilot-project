@@ -1,4 +1,4 @@
-package com.sseung.pilot.seungpilotproject.commons.dto.response;
+package com.sseung.pilot.seungpilotproject.commons.dto.response.board;
 
 import com.sseung.pilot.seungpilotproject.commons.enums.BoardCategory;
 import lombok.*;

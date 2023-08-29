@@ -4,7 +4,7 @@ import com.sseung.pilot.seungpilotproject.business.board.domain.Board;
 import com.sseung.pilot.seungpilotproject.business.board.repo.BoardRepo;
 import com.sseung.pilot.seungpilotproject.business.board.repo.BoardRepoSupport;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
-import com.sseung.pilot.seungpilotproject.commons.dto.response.BoardResponse;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

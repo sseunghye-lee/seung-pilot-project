@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 public enum ResultCode {
     NONE(0, "NONE"),
     EXPIRED_TOKEN(100, "EXPIRED_TOKEN"),
-    EXPIRED_REFRESH_TOKEN(100, "EXPIRED_REFRESH_TOKEN");
+    EXPIRED_REFRESH_TOKEN(100, "EXPIRED_REFRESH_TOKEN"),
+    CONFLICT(200, "DUPLICATE ERROR");
 
     private final int id;
     private final String desc;
