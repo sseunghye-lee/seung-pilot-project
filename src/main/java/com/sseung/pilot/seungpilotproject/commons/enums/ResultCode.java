@@ -18,7 +18,8 @@ public enum ResultCode {
     NONE(0, "NONE"),
     EXPIRED_TOKEN(100, "EXPIRED_TOKEN"),
     EXPIRED_REFRESH_TOKEN(100, "EXPIRED_REFRESH_TOKEN"),
-    CONFLICT(200, "DUPLICATE ERROR");
+    CONFLICT(200, "DUPLICATE ERROR"),
+    NOT_EXISTS(300, "NOT EXISTS");
 
     private final int id;
     private final String desc;

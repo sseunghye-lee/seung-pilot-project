@@ -2,7 +2,9 @@ package com.sseung.pilot.seungpilotproject.business.user.service;
 
 import com.sseung.pilot.seungpilotproject.business.user.domain.Users;
 import com.sseung.pilot.seungpilotproject.business.user.repo.UserRepo;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignInRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignInResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.ResultCode;
 import com.sseung.pilot.seungpilotproject.commons.exception.SignInException;
@@ -44,5 +46,30 @@ public class UserService {
         Users user = this.makeUser(request);
 
         return user.convertSignUpResponse();
+    }
+
+    public Users getUserByEmailAndPw(String email, String password)
+            throws SignInException {
+
+        Users user = getUserByEmail(email).orElseThrow(() ->
+                new SignInException(ResultCode.NOT_EXISTS,
+                        String.format("%s(email: %s)", "Not Exists User.",
+                                email)));
+
+        if (passwordEncoder.matches(password, user.getLoginPw())) {
+            return user;
+        }
+
+        throw new SignInException(ResultCode.NOT_EXISTS,
+                String.format("%s(email: %s, %s)", "Not Exists User.", email, password));
+
+    }
+
+    public SignInResponse signIn(SignInRequest request) throws SignInException {
+        Users user = this.getUserByEmailAndPw(request.getEmail(), request.getPassword());
+
+        SignInResponse signInResponse = user.signIn(request.getRemember());
+
+        return signInResponse;
     }
 }

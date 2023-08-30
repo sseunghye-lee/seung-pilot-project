@@ -3,9 +3,13 @@ package com.sseung.pilot.seungpilotproject.business.user.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignInResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.Gender;
 import com.sseung.pilot.seungpilotproject.commons.enums.UserRole;
+import com.sseung.pilot.seungpilotproject.commons.security.EncryptService;
+import com.sseung.pilot.seungpilotproject.commons.security.TokenService;
+import com.sseung.pilot.seungpilotproject.commons.utils.JwtUtil;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,8 +19,13 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -72,8 +81,40 @@ public class Users extends BaseEntity implements Serializable {
         role.setUsers(this);
     }
 
+    public List<UserRole> getUserRole() {
+        return this.userRoles
+                .stream()
+                .map(o -> o.getUserRole())
+                .collect(Collectors.toList());
+    }
+
     public SignUpResponse convertSignUpResponse() {
         return new SignUpResponse(userEmail, userName);
+    }
+
+    public SignInResponse signIn(Boolean remember) {
+        String token = TokenService.generateToken(this, remember);
+        String refreshToken = TokenService.generateReFreshToken(this, remember);
+        Map<String, Object> claims = JwtUtil.getClaims(token);
+        LocalDateTime exp = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(Long.valueOf(claims.get("exp").toString())),
+                TimeZone.getDefault().toZoneId());
+
+        SignInResponse.Me me = SignInResponse.Me.builder()
+                .userEmail(userEmail)
+                .userId(userId)
+                .userName(userName)
+                .userPhoneNumber(EncryptService.decryptPhoneNumber(userPhoneNumber))
+                .nickName(nickName)
+                .build();
+
+        return SignInResponse.builder()
+                .userRoles(this.getUserRole())
+                .accessToken(token)
+                .refreshToken(refreshToken)
+                .expired(exp)
+                .me(me)
+                .build();
     }
 
 }
