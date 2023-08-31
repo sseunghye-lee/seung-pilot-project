@@ -117,4 +117,11 @@ public class Users extends BaseEntity implements Serializable {
                 .build();
     }
 
+    public List<String> getUserRoleForString() {
+        return this.userRoles
+                .stream()
+                .map(o -> o.getUserRole().getId())
+                .collect(Collectors.toList());
+    }
+
 }

@@ -56,6 +56,7 @@ public class TokenService {
         claims.put("userEmail", user.getUserEmail());
         claims.put("created",
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        claims.put("userRoles", user.getUserRoleForString());
 
         return claims;
     }
