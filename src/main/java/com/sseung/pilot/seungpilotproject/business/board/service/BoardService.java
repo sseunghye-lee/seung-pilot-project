@@ -7,6 +7,7 @@ import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest
 import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetListRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetMyBoardListResponse;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,15 @@ public class BoardService {
     public Page<GetBoardListResponse> getBoardList(BasicGetListRequest request, Pageable pageable) {
         List<GetBoardListResponse> list = boardRepoSupport.getBoardList(request, pageable);
         Long total = boardRepoSupport.getBoardCount(request);
+
+        pageable = pageable == null ? PageRequest.of(0, 10) : pageable;
+
+        return new PageImpl<>(list, pageable, total);
+    }
+
+    public Page<GetMyBoardListResponse> getMyBoardList(Long userId, BasicGetListRequest request, Pageable pageable) {
+        List<GetMyBoardListResponse> list = boardRepoSupport.getMyBoardList(userId, request, pageable);
+        Long total = boardRepoSupport.getMyBoardCount(request);
 
         pageable = pageable == null ? PageRequest.of(0, 10) : pageable;
 

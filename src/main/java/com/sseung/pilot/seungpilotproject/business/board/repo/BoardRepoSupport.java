@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sseung.pilot.seungpilotproject.business.board.domain.QBoard;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetListRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetMyBoardListResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -65,4 +66,47 @@ public class BoardRepoSupport extends QuerydslRepositorySupport {
 
         return results;
     }
+
+    public JPAQuery<?> getMyBoardListQuery(JPAQuery<?> query, BasicGetListRequest request) {
+        String search = request.getSearch();
+
+        if(StringUtils.hasText(search)) {
+            query = query.where(qBoard.title.contains(search));
+        }
+        if (request.getStartDate() != null && request.getEndDate() != null) {
+            query = query.where(
+                    qBoard.createdDate.between(request.getStartDate(), request.getEndDate())
+            );
+        }
+        return query;
+    }
+
+    public Long getMyBoardCount(BasicGetListRequest request) {
+        JPAQuery<Long> query = jpaQueryFactory.select(qBoard.count())
+                .from(qBoard);
+        query = (JPAQuery<Long>) getBoardListQuery(query, request);
+
+        return query.fetchOne();
+    }
+
+    public List<GetMyBoardListResponse> getMyBoardList(Long userId, BasicGetListRequest request, Pageable pageable) {
+        JPAQuery<GetMyBoardListResponse> query = jpaQueryFactory
+                .select(Projections.bean(GetMyBoardListResponse.class, qBoard.bdId, qBoard.title, qBoard.view, qBoard.createdBy,
+                        qBoard.createdDate, qBoard.boardCategory, qBoard.userId))
+                .from(qBoard)
+                .where(qBoard.createdBy.eq(userId))
+                .orderBy(qBoard.createdDate.desc());
+
+        if(pageable != null) {
+            query = query.offset(pageable.getOffset())
+                    .limit(pageable.getPageSize());
+        }
+
+        query = (JPAQuery<GetMyBoardListResponse>) getMyBoardListQuery(query, request);
+
+        List<GetMyBoardListResponse> results = query.fetch();
+
+        return results;
+    }
+
 }
