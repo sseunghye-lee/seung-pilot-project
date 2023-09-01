@@ -3,6 +3,7 @@ package com.sseung.pilot.seungpilotproject.business.user.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.user.UpdateUserRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignInResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.Gender;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -122,6 +124,13 @@ public class Users extends BaseEntity implements Serializable {
                 .stream()
                 .map(o -> o.getUserRole().getId())
                 .collect(Collectors.toList());
+    }
+
+    public void updateUser(UpdateUserRequest request) {
+        this.nickName = request.getNickName();
+        this.userEmail = request.getUserEmail();
+        this.userPhoneNumber = request.getUserPhoneNumber();
+        this.loginPw = request.getLoginPw();
     }
 
 }

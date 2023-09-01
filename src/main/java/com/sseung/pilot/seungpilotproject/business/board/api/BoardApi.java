@@ -30,12 +30,12 @@ public class BoardApi {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{bdId}")
-    public ApiResult<BoardResponse> getBoard(@PathVariable("bdId") long bdId) {
+    public ApiResult<BoardResponse> getBoard(@PathVariable("bdId") Long bdId) {
         return success(boardService.findBoard(bdId));
     }
 
     @PatchMapping("/{bdId}/view")
-    public ApiResult<?> addView(@PathVariable("bdId") long bdId) {
+    public ApiResult<?> addView(@PathVariable("bdId") Long bdId) {
         boardService.addView(bdId);
         return success();
     }
@@ -46,12 +46,12 @@ public class BoardApi {
     }
 
     @GetMapping("/{userId}/my")
-    public ApiResult<Page<GetMyBoardListResponse>> getList(@PathVariable("userId") long userId, BasicGetListRequest request, Pageable pageable) {
+    public ApiResult<Page<GetMyBoardListResponse>> getList(@PathVariable("userId") Long userId, BasicGetListRequest request, Pageable pageable) {
         return success(boardService.getMyBoardList(userId, request, pageable));
     }
 
     @PatchMapping("/{bdId}")
-    public ApiResult<?> update(@PathVariable("bdId") long bdId, @RequestBody UpdateBoardRequest request) {
+    public ApiResult<?> update(@PathVariable("bdId") Long bdId, @RequestBody UpdateBoardRequest request) {
         boardService.updateBoard(bdId, request);
         return success();
     }

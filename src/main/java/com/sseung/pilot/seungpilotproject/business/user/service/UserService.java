@@ -4,11 +4,15 @@ import com.sseung.pilot.seungpilotproject.business.user.domain.Users;
 import com.sseung.pilot.seungpilotproject.business.user.repo.UserRepo;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignInRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.user.UpdateUserRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignInResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.user.UserResponse;
 import com.sseung.pilot.seungpilotproject.commons.enums.ResultCode;
 import com.sseung.pilot.seungpilotproject.commons.exception.SignInException;
 import com.sseung.pilot.seungpilotproject.commons.security.EncryptService;
+import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -71,5 +75,24 @@ public class UserService {
         SignInResponse signInResponse = user.signIn(request.getRemember());
 
         return signInResponse;
+    }
+
+    public Users getOne(Long userId) {
+        return userRepo.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("not Exists " + userId));
+    }
+
+    public UserResponse getUser(Long userId) {
+        Users user = this.getOne(userId);
+        UserResponse response = ModelMapperUtil.get().map(user, UserResponse.class);
+        response.setUserPhoneNumber(EncryptService.encryptPhoneNumber(response.getUserPhoneNumber()));
+        return response;
+    }
+
+    public void updateUser(Long userId, UpdateUserRequest request) {
+        Users user = this.getOne(userId);
+        request.setLoginPw(passwordEncoder.encode(request.getLoginPw()));
+        request.setUserPhoneNumber(EncryptService.encryptPhoneNumber(request.getUserPhoneNumber()));
+        user.updateUser(request);
     }
 }
