@@ -2,6 +2,7 @@ package com.sseung.pilot.seungpilotproject.business.board.api;
 
 import com.sseung.pilot.seungpilotproject.business.board.service.BoardService;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.board.UpdateBoardRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetListRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
@@ -47,5 +48,17 @@ public class BoardApi {
     @GetMapping("/{userId}/my")
     public ApiResult<Page<GetMyBoardListResponse>> getList(@PathVariable("userId") long userId, BasicGetListRequest request, Pageable pageable) {
         return success(boardService.getMyBoardList(userId, request, pageable));
+    }
+
+    @PatchMapping("/{bdId}")
+    public ApiResult<?> update(@PathVariable("bdId") long bdId, @RequestBody UpdateBoardRequest request) {
+        boardService.updateBoard(bdId, request);
+        return success();
+    }
+
+    @DeleteMapping("/{bdId}")
+    public ApiResult<?> delete(@PathVariable("bdId") Long bdId) {
+        boardService.delete(bdId);
+        return success();
     }
 }

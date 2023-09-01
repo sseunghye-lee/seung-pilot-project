@@ -4,6 +4,7 @@ import com.sseung.pilot.seungpilotproject.business.board.domain.Board;
 import com.sseung.pilot.seungpilotproject.business.board.repo.BoardRepo;
 import com.sseung.pilot.seungpilotproject.business.board.repo.BoardRepoSupport;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.board.BoardRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.board.UpdateBoardRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetListRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
@@ -33,12 +34,12 @@ public class BoardService {
         return board.convertDto();
     }
 
-    public Board getOne(long bdId) {
+    public Board getOne(Long bdId) {
         return boardRepo.findById(bdId)
                 .orElseThrow(() -> new EntityNotFoundException("not exists " + bdId));
     }
 
-    public BoardResponse findBoard(long bdId) {
+    public BoardResponse findBoard(Long bdId) {
         Board board = this.getOne(bdId);
         return ModelMapperUtil.get().map(board, BoardResponse.class);
     }
@@ -64,5 +65,15 @@ public class BoardService {
         pageable = pageable == null ? PageRequest.of(0, 10) : pageable;
 
         return new PageImpl<>(list, pageable, total);
+    }
+
+    public void updateBoard(Long bdId, UpdateBoardRequest request) {
+        Board board = this.getOne(bdId);
+        board.updateBoard(request);
+    }
+
+    public void delete(Long bdId) {
+        Board board = this.getOne(bdId);
+        boardRepo.delete(board);
     }
 }
