@@ -1,9 +1,11 @@
 package com.sseung.pilot.seungpilotproject.business.user.api;
 
 import com.sseung.pilot.seungpilotproject.business.user.service.UserService;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetListRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignInRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.UpdateUserRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.user.GetUserListResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignInResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.UserResponse;
@@ -11,6 +13,9 @@ import com.sseung.pilot.seungpilotproject.commons.exception.SignInException;
 import com.sseung.pilot.seungpilotproject.commons.utils.ApiUtils.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +49,11 @@ public class UserApi {
     @GetMapping("/{userId}")
     public ApiResult<UserResponse> getUser(@PathVariable("userId") Long userId) {
         return success(userService.getUser(userId));
+    }
+
+    @PreAuthorize("hasRole('ROLE_MASTER')")
+    @GetMapping
+    public ApiResult<Page<GetUserListResponse>> getList(BasicGetListRequest request, Pageable pageable) {
+        return success(userService.getUserList(request, pageable));
     }
 }

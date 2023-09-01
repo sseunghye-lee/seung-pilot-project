@@ -2,9 +2,13 @@ package com.sseung.pilot.seungpilotproject.business.user.service;
 
 import com.sseung.pilot.seungpilotproject.business.user.domain.Users;
 import com.sseung.pilot.seungpilotproject.business.user.repo.UserRepo;
+import com.sseung.pilot.seungpilotproject.business.user.repo.UserRepoSupport;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetListRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignInRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.SignUpRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.user.UpdateUserRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
+import com.sseung.pilot.seungpilotproject.commons.dto.response.user.GetUserListResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignInResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.SignUpResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.user.UserResponse;
@@ -14,10 +18,15 @@ import com.sseung.pilot.seungpilotproject.commons.security.EncryptService;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -27,6 +36,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepo;
+    private final UserRepoSupport userRepoSupport;
 
     public Optional<Users> getUserByEmail(String userEmail) {
         return userRepo.findByUserEmail(userEmail);
@@ -94,5 +104,14 @@ public class UserService {
         request.setLoginPw(passwordEncoder.encode(request.getLoginPw()));
         request.setUserPhoneNumber(EncryptService.encryptPhoneNumber(request.getUserPhoneNumber()));
         user.updateUser(request);
+    }
+
+    public Page<GetUserListResponse> getUserList(BasicGetListRequest request, Pageable pageable) {
+        List<GetUserListResponse> list = userRepoSupport.getUserList(request, pageable);
+        Long total = userRepoSupport.getUserCount(request);
+
+        pageable = pageable == null ? PageRequest.of(0, 10) : pageable;
+
+        return new PageImpl<>(list, pageable, total);
     }
 }
