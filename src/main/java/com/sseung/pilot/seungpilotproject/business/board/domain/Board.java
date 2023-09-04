@@ -1,5 +1,8 @@
 package com.sseung.pilot.seungpilotproject.business.board.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sseung.pilot.seungpilotproject.business.comment.domain.Comments;
+import com.sseung.pilot.seungpilotproject.business.user.domain.UserRoles;
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
 import com.sseung.pilot.seungpilotproject.commons.converter.FileConverter;
 import com.sseung.pilot.seungpilotproject.commons.dto.commons.FileDto;
@@ -16,6 +19,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -50,6 +55,10 @@ public class Board extends BaseEntity implements Serializable {
 
     @Column(columnDefinition = "bigint COMMENT '사용자 아이디'")
     private Long userId;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comments> comments;
 
     public static Board insert(BoardRequest boardRequest) {
         return Board.builder()
