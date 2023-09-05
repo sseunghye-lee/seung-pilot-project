@@ -3,6 +3,7 @@ package com.sseung.pilot.seungpilotproject.business.comment.domain;
 import com.sseung.pilot.seungpilotproject.business.board.domain.Board;
 import com.sseung.pilot.seungpilotproject.commons.BaseEntity;
 import com.sseung.pilot.seungpilotproject.commons.dto.request.comment.CommentRequest;
+import com.sseung.pilot.seungpilotproject.commons.dto.request.comment.UpdateCommentRequest;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.comment.CommentResponse;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.*;
@@ -32,6 +33,9 @@ public class Comments extends BaseEntity implements Serializable {
     @Column(columnDefinition = "mediumtext COMMENT '댓글 내용'")
     private String content;
 
+    @Column(columnDefinition = "bigint COMMENT '사용자 아이디'")
+    private Long userId;
+
     @Column(columnDefinition = "bigint COMMENT '게시글 ID'", insertable = false, updatable = false)
     private Long bdId;
 
@@ -40,16 +44,21 @@ public class Comments extends BaseEntity implements Serializable {
     @JoinColumn(name = "bdId")
     private Board board;
 
-    public static Comments insert(CommentRequest request) {
+    public static Comments insert(Long userId, CommentRequest request) {
         return Comments.builder()
                 .bdId(request.getBdId())
                 .content(request.getContent())
+                .userId(userId)
                 .board(request.getBoard())
                 .build();
     }
 
     public CommentResponse convertDto() {
         return ModelMapperUtil.get().map(this, CommentResponse.class);
+    }
+
+    public void updateComment(UpdateCommentRequest request) {
+        this.content = request.getContent();
     }
 
 }
