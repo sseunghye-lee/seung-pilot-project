@@ -40,12 +40,14 @@ public class UserApi {
         return success(userService.signIn(request));
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{userId}")
     public ApiResult<?> update(@PathVariable("userId") Long userId, @RequestBody UpdateUserRequest request) {
         userService.updateUser(userId, request);
         return success();
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{userId}")
     public ApiResult<UserResponse> getUser(@PathVariable("userId") Long userId) {
         return success(userService.getUser(userId));

@@ -40,22 +40,26 @@ public class BoardApi {
         return success();
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_MASTER')")
     @GetMapping
     public ApiResult<Page<GetBoardListResponse>> getList(BasicGetListRequest request, Pageable pageable) {
         return success(boardService.getBoardList(request, pageable));
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{userId}/my")
     public ApiResult<Page<GetMyBoardListResponse>> getList(@PathVariable("userId") Long userId, BasicGetListRequest request, Pageable pageable) {
         return success(boardService.getMyBoardList(userId, request, pageable));
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{bdId}")
     public ApiResult<?> update(@PathVariable("bdId") Long bdId, @RequestBody UpdateBoardRequest request) {
         boardService.updateBoard(bdId, request);
         return success();
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{bdId}")
     public ApiResult<?> delete(@PathVariable("bdId") Long bdId) {
         boardService.delete(bdId);
