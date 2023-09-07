@@ -15,5 +15,4 @@ public class BoardRequest {
     private String title;
     private Long view;
     private String content;
-    private Long userId;
 }

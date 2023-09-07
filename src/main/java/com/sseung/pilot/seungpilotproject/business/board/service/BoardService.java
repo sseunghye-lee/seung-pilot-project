@@ -9,6 +9,7 @@ import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetLi
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetMyBoardListResponse;
+import com.sseung.pilot.seungpilotproject.commons.exception.NotAuthorizedException;
 import com.sseung.pilot.seungpilotproject.commons.utils.ModelMapperUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class BoardService {
     private final BoardRepo boardRepo;
     private final BoardRepoSupport boardRepoSupport;
 
-    public BoardResponse insertBoard(BoardRequest boardRequest) {
-        Board board = Board.insert(boardRequest);
+    public BoardResponse insertBoard(Long userId, BoardRequest boardRequest) {
+        Board board = Board.insert(userId, boardRequest);
         boardRepo.save(board);
         return board.convertDto();
     }
@@ -67,13 +68,23 @@ public class BoardService {
         return new PageImpl<>(list, pageable, total);
     }
 
-    public void updateBoard(Long bdId, UpdateBoardRequest request) {
+    public void updateBoard(Long bdId, Long userId, UpdateBoardRequest request) {
         Board board = this.getOne(bdId);
+
+        if(board.getUserId() != userId) {
+            throw new NotAuthorizedException("수정 불가능한 계정입니다.");
+        }
+
         board.updateBoard(request);
     }
 
-    public void delete(Long bdId) {
+    public void delete(Long bdId, Long userId) {
         Board board = this.getOne(bdId);
+
+        if(board.getUserId() != userId) {
+            throw new NotAuthorizedException("삭제 불가능한 계정입니다.");
+        }
+
         boardRepo.delete(board);
     }
 }

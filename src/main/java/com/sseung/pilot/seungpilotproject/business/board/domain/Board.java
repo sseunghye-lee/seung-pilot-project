@@ -60,13 +60,13 @@ public class Board extends BaseEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comments> comments;
 
-    public static Board insert(BoardRequest boardRequest) {
+    public static Board insert(Long userId, BoardRequest boardRequest) {
         return Board.builder()
                 .boardCategory(boardRequest.getBoardCategory())
                 .title(boardRequest.getTitle())
                 .view(0L)
                 .content(boardRequest.getContent())
-                .userId(boardRequest.getUserId())
+                .userId(userId)
                 .build();
     }
 

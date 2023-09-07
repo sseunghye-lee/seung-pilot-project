@@ -7,6 +7,8 @@ import com.sseung.pilot.seungpilotproject.commons.dto.request.commons.BasicGetLi
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.BoardResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetBoardListResponse;
 import com.sseung.pilot.seungpilotproject.commons.dto.response.board.GetMyBoardListResponse;
+import com.sseung.pilot.seungpilotproject.commons.resolver.LoginUser;
+import com.sseung.pilot.seungpilotproject.commons.security.CustomUserDetails;
 import com.sseung.pilot.seungpilotproject.commons.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,8 +26,8 @@ public class BoardApi {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ApiResult<BoardResponse> add(@RequestBody BoardRequest boardRequest) {
-        return success(boardService.insertBoard(boardRequest));
+    public ApiResult<BoardResponse> add(@LoginUser CustomUserDetails customUserDetails, @RequestBody BoardRequest boardRequest) {
+        return success(boardService.insertBoard(customUserDetails.getUserId(), boardRequest));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -47,22 +49,22 @@ public class BoardApi {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/{userId}/my")
-    public ApiResult<Page<GetMyBoardListResponse>> getList(@PathVariable("userId") Long userId, BasicGetListRequest request, Pageable pageable) {
-        return success(boardService.getMyBoardList(userId, request, pageable));
+    @GetMapping("/my")
+    public ApiResult<Page<GetMyBoardListResponse>> getList(BasicGetListRequest request, @LoginUser CustomUserDetails customUserDetails, Pageable pageable) {
+        return success(boardService.getMyBoardList(customUserDetails.getUserId(), request, pageable));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{bdId}")
-    public ApiResult<?> update(@PathVariable("bdId") Long bdId, @RequestBody UpdateBoardRequest request) {
-        boardService.updateBoard(bdId, request);
+    public ApiResult<?> update(@PathVariable("bdId") Long bdId, @LoginUser CustomUserDetails customUserDetails, @RequestBody UpdateBoardRequest request) {
+        boardService.updateBoard(bdId, customUserDetails.getUserId(), request);
         return success();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{bdId}")
-    public ApiResult<?> delete(@PathVariable("bdId") Long bdId) {
-        boardService.delete(bdId);
+    public ApiResult<?> delete(@PathVariable("bdId") Long bdId, @LoginUser CustomUserDetails customUserDetails) {
+        boardService.delete(bdId, customUserDetails.getUserId());
         return success();
     }
 }
