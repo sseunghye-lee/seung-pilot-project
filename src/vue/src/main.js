@@ -19,4 +19,6 @@ app.use(ElementPlus, {
     locale: ko
 })
 
-app.mount('#app')
+app.use(router).mount('#app')
+
+// app.mount('#app')

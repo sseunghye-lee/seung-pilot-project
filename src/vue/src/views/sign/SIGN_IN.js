@@ -1,5 +1,8 @@
 import axios from 'axios'
 
+export default {
+
+}
 const getUserInfo = (userEmail, loginPw, remember) => {
     const req = {
         'email': userEmail,
